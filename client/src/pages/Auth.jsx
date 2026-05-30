@@ -7,20 +7,44 @@ import axios from "axios"
 import { serverUrl } from '../App';
 import { useDispatch } from 'react-redux';
 import { setUserData } from '../redux/userSlice';
+import { useNavigate } from "react-router-dom";
 function Auth() {
   const dispatch = useDispatch()
+  const navigate = useNavigate();
 
   const handleGoogleAuth = async () => {
     
-    try {
-      const response = await signInWithPopup(auth,provider)
-      const User = response.user
-      const name = User.displayName
-      const email = User.email
-      const result = await axios.post(serverUrl + "/api/auth/google" , {name , email},{
-        withCredentials:true
-      })
-      dispatch(setUserData(result.data))
+    console.log("Button clicked");
+
+  try {
+
+    const response = await signInWithPopup(auth, provider);
+
+    console.log("Firebase success");
+
+    const User = response.user;
+
+    const name = User.displayName;
+    const email = User.email;
+
+    const result = await axios.post(
+      serverUrl + "/api/auth/google",
+      { name, email },
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log("Backend success");
+    console.log(result.data);
+
+    dispatch(setUserData(result.data));
+
+    console.log("Redux updated");
+
+    navigate("/");
+
+    console.log("Navigate called");
     } catch (error) {
       console.log(error)
     }
